@@ -7,7 +7,8 @@ import type {
   UserInfo,
   MenuItem,
   UserListParams,
-  UserListRes
+  UserListRes,
+  Exams
 } from '../type' 
 
 
@@ -31,4 +32,7 @@ export const userListApi = (params: UserListParams) => {
   return request.get<UserListRes>('/user/list', { params })
 }
 
-
+// 试卷库接口
+export const examsApi = () => {
+  return request.get<BaseResponse<Exams>>('exam/list')
+}
