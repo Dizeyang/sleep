@@ -1,0 +1,34 @@
+import request from "./request"
+import type {
+  BaseResponse,
+  LoginParams,
+  CaptchaRes,
+  LoginRes,
+  UserInfo,
+  MenuItem,
+  UserListParams,
+  UserListRes
+} from '../type' 
+
+
+export const getCaptcha = () => {
+  return request.get<CaptchaRes>('/login/captcha')
+}
+
+export const loginApi = (params: LoginParams) => {
+  return request.post<LoginRes>('/login', params)
+}
+
+
+export const userInfoApi = () => {
+  return request.get<BaseResponse<UserInfo>>('/user/info')
+}
+
+export const menuListApi = () => {
+  return request.get<BaseResponse<{ list: MenuItem[] }>>('/user/menulist')
+}
+export const userListApi = (params: UserListParams) => {
+  return request.get<UserListRes>('/user/list', { params })
+}
+
+
