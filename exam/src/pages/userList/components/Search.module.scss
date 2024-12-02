@@ -1,0 +1,7 @@
+.row {
+  display: flex;
+  :global(.ant-form-item) {
+    width: calc(100% / 3);
+    padding-right: 15px;
+  }
+}

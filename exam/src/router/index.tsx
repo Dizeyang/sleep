@@ -4,6 +4,7 @@ import Home from '../pages/home/Home'
 import UserList from '../pages/userList/UserList'
 import Exams from '../pages/exams/Exams'
 import LayoutPage from '../layout/Layout'
+import Permission from '../pages/permission/Permission'
 
 export default [
   {
@@ -37,5 +38,13 @@ export default [
   {
     path: '*',
     element: <Notfound />
+  },
+  {
+    path: '/userManage/menuManage',
+    element: (
+      <LayoutPage>
+        <Permission />
+      </LayoutPage>
+    )
   }
 ]
