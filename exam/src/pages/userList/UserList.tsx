@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { userListApi } from '../../services'
+import { userListApi, removeApi } from '../../services'
 import type { UserListItem } from '../../type'
-import { Table, Image } from 'antd'
+import { Table, Image, Space, Button, Popconfirm, message, PopconfirmProps } from 'antd'
 import type { TableProps } from 'antd'
-import type { ProColumns } from '@ant-design/pro-components';
+import Search from './components/Search'
 
 const UserList = () => {
   const [dataSource, setDataSource] = useState<readonly DataSourceType[]>([]);
@@ -15,20 +15,42 @@ const UserList = () => {
   })
   const [total, setTotal] = useState(0)
   const [userList, setUserList] = useState<UserListItem[]>([])
+  const [searchParams, setSearchParams] = useState({})
 
   const getList = async () => {
     setLoading(true)
-    const res = await userListApi(query)
+    const res = await userListApi({ ...query, ...searchParams })
     setUserList(res.data.data.list)
+    console.log(res.data.data.list)
     setTotal(res.data.data.total)
     setLoading(false)
   }
 
   useEffect(() => {
     getList()
-  }, [query])
+  }, [query, searchParams])
 
-  const columns: ProColumns<UserListItem>['columns'] = [
+  const confirm = async (record: UserListItem) => {
+    try {
+      const res = await removeApi(record._id);
+      if (res.data.code === 200) {
+        message.success('删除成功');
+        getList();
+      } else {
+        message.error(res.data.msg || '删除失败');
+      }
+    } catch (error) {
+      console.error('删除失败:', error);
+      message.error('删除失败');
+    }
+  }
+  
+  const cancel: PopconfirmProps['onCancel'] = (e) => {
+    console.log(e);
+    message.error('Click on No');
+  };
+
+  const columns: TableProps<UserListItem>['columns'] = [
     
     {
       title: '头像',
@@ -78,32 +100,35 @@ const UserList = () => {
     },
     {
       title: '操作',
-      valueType: 'option',
+      key: 'actions',
+      fixed: 'right',
       width: 200,
-      render: (text, record, _, action) => [
-        <a
-          key="editable"
-          // onClick={() => {
-          //   action?.startEditable?.(record.id);
-          // }}
-        >
-          编辑
-        </a>,
-        <a
-          key="delete"
-          // onClick={() => {
-          //   setDataSource(dataSource.filter((item) => item.id !== record.id));
-          // }}
-        >
-          删除
-        </a>,
-      ],
-    },
-  ];
-  
+      align: 'center',
+      render: (_, record) => {
+        return <Space>
+          <Button type="primary" size="small">分配角色</Button>
+          <Button size="small">编辑</Button>
+          <Popconfirm
+            title="删除"
+            description="你确定要删除这一项内容吗？"
+            onConfirm={() => confirm(record)}
+            onCancel={cancel}
+            okText="是"
+            cancelText="否"
+          >
+            <Button danger size="small">删除</Button>
+          </Popconfirm>
+        </Space>
+      }
+    }
+  ]
 
   return (
     <div>
+      <Search onSearch={params => {
+        console.log(params)
+        setSearchParams(params)
+      }}/>
       <Table
         loading={loading}
         columns={columns}
@@ -111,6 +136,9 @@ const UserList = () => {
         rowKey="_id"
         pagination={{
           total,
+          showTotal: (total, [a, b]) => `共 ${total} 条数据 ${a} - ${b}`,
+          showSizeChanger: true, // 是否可以改变 pageSize
+          pageSizeOptions: [5, 10, 20, 30],
           current: query.page,
           pageSize: query.pagesize,
           onChange: (page: number, pagesize: number) => {

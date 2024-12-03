@@ -30,6 +30,28 @@ export type UserInfo = {
   role: string[]
 }
 
+// 试卷库数据类型
+export type Exams = {
+  _id: string
+  name: string
+  classify: string
+  createTime: number
+  creator: string
+  questions: string[]
+}
+
+// 试题库表格
+export type ExamsListItem = {
+  _id: string
+  username: string
+  password: string
+  status: 0 | 1
+  age: number
+  avator: string
+  email: string
+  sex: string
+}
+
 // 左侧菜单
 export type MenuItem = {
   createTime: number
