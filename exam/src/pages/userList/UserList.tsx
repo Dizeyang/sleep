@@ -3,8 +3,11 @@ import { userListApi } from '../../services'
 import type { UserListItem } from '../../type'
 import { Table, Image } from 'antd'
 import type { TableProps } from 'antd'
+import type { ProColumns } from '@ant-design/pro-components';
 
 const UserList = () => {
+  const [dataSource, setDataSource] = useState<readonly DataSourceType[]>([]);
+
   const [loading, setLoading] = useState(false)
   const [query, setQuery] = useState({
     page: 1,
@@ -25,7 +28,7 @@ const UserList = () => {
     getList()
   }, [query])
 
-  const columns: TableProps<UserListItem>['columns'] = [
+  const columns: ProColumns<UserListItem>['columns'] = [
     
     {
       title: '头像',
@@ -72,8 +75,32 @@ const UserList = () => {
       title: '创建人',
       dataIndex: 'creator',
       key: 'creator'
-    }
-  ]
+    },
+    {
+      title: '操作',
+      valueType: 'option',
+      width: 200,
+      render: (text, record, _, action) => [
+        <a
+          key="editable"
+          // onClick={() => {
+          //   action?.startEditable?.(record.id);
+          // }}
+        >
+          编辑
+        </a>,
+        <a
+          key="delete"
+          // onClick={() => {
+          //   setDataSource(dataSource.filter((item) => item.id !== record.id));
+          // }}
+        >
+          删除
+        </a>,
+      ],
+    },
+  ];
+  
 
   return (
     <div>
