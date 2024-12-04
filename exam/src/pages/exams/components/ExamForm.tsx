@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form, Input, InputNumber, Button, Select, DatePicker } from 'antd';
 import type { Exams } from '../../../type';
-import moment from 'moment';
+
 
 interface Props {
   initialValues?: Exams | null;
