@@ -3,10 +3,13 @@ import Login from '../pages/login/Login'
 import Home from '../pages/home/Home'
 import UserList from '../pages/userList/UserList'
 import Exams from '../pages/exams/Exams'
+import TestBank from '../pages/test/TestBank'
+import CreateItem from '../pages/test/createItem'
 import LayoutPage from '../layout/Layout'
 import Permission from '../pages/permission/Permission'
 import ExamRecords from '../pages/ExamManage/examRecords/ExamRecords'
 import CreateExam from '../pages/ExamManage/createExam/CreateExam'
+
 
 export default [
   {
@@ -49,6 +52,23 @@ export default [
       </LayoutPage>
     )
   },
+  {
+    path: '/question/item-bank',
+    element: (
+      <LayoutPage>
+        <TestBank />
+      </LayoutPage>
+    )
+  },
+  {
+    path: '/question/create-item',
+    element: (
+      <LayoutPage>
+        <CreateItem />
+      </LayoutPage>
+    )
+  },
+  
   {
     path: '/login',
     element: <Login />

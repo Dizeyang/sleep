@@ -66,8 +66,8 @@ export type MenuItem = {
 
 // 用户列表
 export type UserListParams = {
-  page: number
-  pagesize: number
+  page?: number
+  pagesize?: number
 }
 export type UserListItem = {
   _id: string
