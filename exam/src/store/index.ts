@@ -1,10 +1,18 @@
+// 路径：src/store/index.ts
 import { configureStore } from '@reduxjs/toolkit'
 import user from './models/user'
+import queryReducer from './slices/QuerySlice';
+// import { examinationReducer, studentGroupReducer, classifyReducer } from './ExamManages';
+import examinationReducer from './ExamManages'
 
 // 创建store
 const store =  configureStore({
   reducer: {
-    user
+    user,
+    query: queryReducer,
+    examination: examinationReducer,
+    // studentGroup: studentGroupReducer,
+    // classify: classifyReducer,
   }
 })
 

@@ -6,6 +6,9 @@ import Exams from '../pages/exams/Exams'
 import TestBank from '../pages/test/TestBank'
 import CreateItem from '../pages/test/createItem'
 import LayoutPage from '../layout/Layout'
+import Permission from '../pages/permission/Permission'
+import ExamRecords from '../pages/ExamManage/examRecords/ExamRecords'
+import CreateExam from '../pages/ExamManage/createExam/CreateExam'
 
 
 export default [
@@ -14,6 +17,22 @@ export default [
     element: (
       <LayoutPage>
         <Home />
+      </LayoutPage>
+    )
+  },
+  {
+    path: '/exam/record',
+    element: (
+      <LayoutPage>
+        <ExamRecords />
+      </LayoutPage>
+    )
+  },
+  {
+    path: '/exam/create',
+    element: (
+      <LayoutPage>
+        <CreateExam />
       </LayoutPage>
     )
   },
@@ -57,5 +76,13 @@ export default [
   {
     path: '*',
     element: <Notfound />
+  },
+  {
+    path: '/userManage/menuManage',
+    element: (
+      <LayoutPage>
+        <Permission />
+      </LayoutPage>
+    )
   }
 ]

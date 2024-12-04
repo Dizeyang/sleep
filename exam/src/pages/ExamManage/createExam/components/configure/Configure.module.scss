@@ -1,0 +1,28 @@
+.table{
+    
+    width: 100%!important;
+    :globle{
+        .ant-pro-steps-form-container{
+            width: 100%!important;
+        }
+    }
+}
+.custom-large-table {
+    .ant-table-thead > tr > th,
+    .ant-table-tbody > tr > td {
+      padding: 16px; /* 增加单元格内边距 */
+      font-size: 14px; /* 增加字体大小 */
+    }
+    .ant-table-pagination {
+      margin: 24px 0; /* 增加分页器的外边距 */
+    }
+  }
+
+  .box{
+    width: 1000px;
+    :global{
+      ant-table-wrapper{
+        width: 100%!important;
+      }
+    }
+  }

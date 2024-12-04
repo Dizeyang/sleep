@@ -1,0 +1,10 @@
+.analysis{
+    ul{
+        display: flex;
+        flex-wrap: wrap;
+        li{
+            flex: 1 1 250px;
+            line-height: 40px;
+        }
+    }
+}
