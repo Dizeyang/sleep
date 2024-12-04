@@ -1,87 +1,108 @@
 import React, { useEffect, useState } from 'react'
+import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
 import style from './ExamRecord.module.scss'
 import { Table, Button, Drawer, Radio, Space } from 'antd'
 import type { TableProps,  DrawerProps, RadioChangeEvent } from 'antd'
 import { useDispatch, useSelector } from 'react-redux';
 import {examinationListApi} from '../../../../services'
-import type { examinationItem } from '../../../../type'
+import { removeExamApi } from '../../../../services'
+import type { examinationItem,studentGroupItem } from '../../../../type'
 import { setQuery } from '../../../../store/slices/QuerySlice'
-import { setExaminationList } from '../../../../store/ExamManages/ExamManageSlice'
-import { removeExamination } from '../../../../store/ExamManages/ExamManageSlice';
-import { fetchExaminationList,deleteExaminations } from '../../../../store/ExamManages/ExamManageSlice';
-import { RootState, AppDispatch } from '../../../../store'; 
+// import { setExaminationList } from '../../../../store/ExamManages/ExamManageSlice'
+// import { removeExamination } from '../../../../store/ExamManages/ExamManageSlice';
+// import { fetchExaminationList,deleteExaminations } from '../../../../store/ExamManages/ExamManageSlice';
+// import { RootState, AppDispatch } from '../../../../store'; 
 
 interface ExamRecordProps {
   handleAnalysisBack: () => void;
+  studentGroupList: any[]; // 定义gradeOptions的类型
 }
 
-const UserList: React.FC<ExamRecordProps> = ({ handleAnalysisBack }) => {
-    
-  const examinationList = useSelector((state: RootState) => state.examination.examinationList);
+const UserList: React.FC<ExamRecordProps> = ({ query,studentGroupList, handleAnalysisBack }) => {
+    console.log(studentGroupList)
+  // const examinationList = useSelector((state: RootState) => state.examination.examinationList);
 
-  const handleDelete = (id) => {
-    dispatch(deleteExaminations(id)); // 调用异步 Thunk
-  };
+  // const handleDelete = (id) => {
+  //   dispatch(deleteExaminations(id)); // 调用异步 Thunk
+  //   deleteExaminations(id)
+  // };
 
-    const dispatch = useDispatch();
-    const query = useSelector((state: RootState) => state.query.query);
-    // const [dataSource, setDataSource] = useState<readonly examinationItem[]>([]);
-    // const [loading, setLoading] = useState(false)
-    // const [query, setQuery] = useState({
-    //   page: 1,
-    //   pagesize: 5
-    // })
-    // const [total, setTotal] = useState(0)
-    // const [examinationList, setExaminationList] = useState<examinationItem[]>([])
-    
-    // const getexaminationList = async () => {
-    //   setLoading(true)
-    //   const res = await examinationListApi(query)
-    //   // setExaminationList(res?.data.data.list)
-    //   dispatch(setExaminationList(res?.data.data.list));
-      // dispatch(setDataSource(examinationList))
-    //   // dispatch(setTotal(res?.data.data.total))
-    //   setLoading(false)
-    //   console.log(res)
-    // }
-    // useEffect(() => {
-    //   getexaminationList()
-    // }, [query])
+  const dispatch = useDispatch();
+  // const query = useSelector((state: RootState) => state.query.query);
 
-    // useEffect(() => {
-    //   if (!loading) {
-    //     dispatch(fetchExaminationList(query)); // 只有在没有加载中时才触发数据请求
-    //   }
-    // }, [dispatch, query, loading]); 
+  // useEffect(() => {
+  //   // 假设query是你想要传递给API的查询参数
+  //   const query = {}; 
+  //   dispatch(fetchExaminationList(query));
+  // }, [dispatch]);
 
-    
 
-    // useEffect(() => {
-    //   dispatch(fetchExaminationList(query));
-    //   console.log('查询参数:', query);
-    // }, [dispatch, query]);
+    // const query = useSelector((state) => state.query?.query); // 使用useSelector获取query状态
+    const [loading, setLoading] = useState(false)
+    // 考试列表
+    const [total, setTotal] = useState(0); // 用于分页的总条目数
 
-    // useEffect(() => {
-    //   console.log(examinationList); // 这里将在状态更新后打印新的考试列表
-    // }, [examinationList]);
+    const [examinationList, setExaminationList] = useState<examinationItem[]>([])
+    // 考试列表
+    const getexaminationList = async () => {
+      // console.log('API Request with query:', query);
+      setLoading(true)
+      const res = await examinationListApi(query)
+      setExaminationList(res?.data.data.list)
+      setTotal(res?.data.data.total);
+      console.log(res?.data.data.list)
+      // setTotal(res?.data.data.total)
+      // setQuery({ page: 1, pagesize: 90 })
+      // dispatch(setExaminationList(res?.data.data.list));
+      // dispatch(setTotal(res?.data.data.total));
+      setLoading(false)
+        
+    }
     useEffect(() => {
-      // 假设query是你想要传递给API的查询参数
-      const query = {}; 
-      dispatch(fetchExaminationList(query));
-    }, [dispatch]);
+      getexaminationList()
+      // console.log('Query Changed:', query); 
+    }, [query])
 
 
+// 删除
+const deleteExaminations = async (id) => {
+      // const response = await removeExamApi({id: _id});
+      try {
+        const response = await removeExamApi({ id });
+        console.log(response);
+        // 重新获取考试列表
+        getexaminationList();
+      } catch (error) {
+        console.error('删除失败:', error);
+      }
+}
+
+const getClassNameById = (_id) => {
+  const grade = studentGroupList.find(option => option._id === _id);
+  console.log(grade)
+  return grade ? grade.name : '未知班级'; // 如果找不到班级，返回'未知班级'
+};
+
+
+
+
+    // 预览试卷抽屉
     const [open, setOpen] = useState(false);
-
-    const showDrawer = () => {
+    const [currentExam, setCurrentExam] = useState<examinationItem | null>(null);
+    const optionsPrefix = ['A', 'B', 'C', 'D'];
+    
+    const showDrawer = (exam) => {
       setOpen(true);
+      setCurrentExam(exam);
     };
   
     const onClose = () => {
       setOpen(false);
+      setCurrentExam(null);
     };
 
-
+  //  转换时间戳
     const formatDate = (timestamp) => {
         const date = new Date(timestamp); // 创建 Date 对象
         const year = date.getFullYear(); // 获取年份
@@ -92,6 +113,19 @@ const UserList: React.FC<ExamRecordProps> = ({ handleAnalysisBack }) => {
         const second = date.getSeconds().toString().padStart(2, '0'); // 获取秒
       
         return `${year}-${month}-${day} ${hour}:${minute}:${second}`; // 返回格式化的日期字符串
+      };
+
+
+      const exportPdf = () => {
+        if (!currentExam) return;
+    
+        const content = document.querySelector(`.${style.currentExam}`);
+        html2canvas(content).then((canvas) => {
+          const imgData = canvas.toDataURL('image/png');
+          const pdf = new jsPDF();
+          pdf.addImage(imgData, 'PNG', 0, 0);
+          pdf.save('examination.pdf');
+        });
       };
 
   const columns: TableProps<examinationItem>['columns'] = [
@@ -121,7 +155,6 @@ const UserList: React.FC<ExamRecordProps> = ({ handleAnalysisBack }) => {
       title: '状态',
       key: 'status',
       render: (text, record) => {
-        // 根据 record.status 的值返回不同的字符串
         if (record.status === 1) {
           return '已结束';
         } else if (record.status === 2) {
@@ -139,8 +172,13 @@ const UserList: React.FC<ExamRecordProps> = ({ handleAnalysisBack }) => {
     },
     {
       title: '考试班级',
-      dataIndex: 'name',
-      key: 'name'
+      // dataIndex: 'name',
+      // key: 'name'
+      key: 'examgroup', // 使用一个新的key来表示班级
+      render: (text, record) =>{
+        const className = record.group && record.group.length > 0 ? record.group[0] : '未知班级';
+        return className; // 直接返回班级名称
+      }  // 假设每个考试记录有一个group字段，里面包含班级ID
     },
     {
       title: '开始时间',
@@ -163,7 +201,7 @@ const UserList: React.FC<ExamRecordProps> = ({ handleAnalysisBack }) => {
                 key="editable"
                 type="primary"
                 onClick={() => {
-                    showDrawer();
+                    showDrawer(record);
                     console.log('编辑', record);
                 }}
             >
@@ -181,8 +219,9 @@ const UserList: React.FC<ExamRecordProps> = ({ handleAnalysisBack }) => {
                 // onClick={record.status === 1 ? (event) => event.preventDefault() : () => {
                 //   dispatch(removeExamination({ id: record._id }));
                 // }}
-                onClick={record.status === 1 ? (event) => event.preventDefault() : () => handleDelete(record._id)}
-           >
+                // onClick={record.status === 1 ? (event) => event.preventDefault() : () => handleDelete(record._id)}
+                onClick={record.status === 1 ? (event) => event.preventDefault() : () => deleteExaminations(record._id)}
+          >
                 删除
             </a>,
         ],
@@ -221,8 +260,9 @@ const UserList: React.FC<ExamRecordProps> = ({ handleAnalysisBack }) => {
         columns={columns}
         dataSource={examinationList}
         rowKey="_id"
+        
         pagination={{
-          // total,
+          total,
           current: query.page,
           pageSize: query.pagesize,
           onChange: (page: number, pagesize: number) => {
@@ -234,18 +274,47 @@ const UserList: React.FC<ExamRecordProps> = ({ handleAnalysisBack }) => {
       title="预览试卷"
       // placement={placement}
       width={600}
+      // onRow={(record) => {
+      //   return {
+      //     onClick: () => {
+      //       showDrawer(record);
+      //     },
+      //   };
+      // }}
       extra={
         <Space>
-          <Button onClick={onClose}>导出PDF</Button>
+          <Button onClick={exportPdf}>导出PDF</Button>
           <Button type="primary" onClick={onClose}>
             OK
           </Button>
         </Space>
       }
       onClose={onClose} open={open}>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
+        {/* {currentExam && ( */}
+          <div className={style.currentExam}>
+            <h2>科目：{currentExam?.classify}</h2>
+            {['1', '2'].map((type) => {
+              const questions = currentExam?.questionsList.filter(q => q.type === type);
+              if (questions?.length === 0) return null;
+              return (
+                <div key={type}>
+                  <h3>{type === '1' ? '单选题' : '多选题'}</h3>
+                  {questions?.map((question, index) => (
+                    <div className={style.questions} key={question._id}>
+                      <h5>{index + 1}. {question?.question}</h5>
+                      <ul>
+                      {question?.options.map((option, idx) => (
+                      <li key={idx}>{`${optionsPrefix[idx]}: ${option}`}</li>
+                    ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              );
+            })}
+          </div>
+        
+        
       </Drawer>,
     </div>
   )

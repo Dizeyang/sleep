@@ -73,6 +73,8 @@ export const createExamApi = (params: createExamParams) => {
 // export const removeExamApi = (params: removeExamParams) => {
 //   return request.post<removeExamRes>('/examination/remove',params);
 // };
+
+// 删除考试的接口
 export const removeExamApi = (params: removeExamParams) => {
   return request.post<removeExamRes>('/examination/remove', params);
 };
@@ -82,10 +84,10 @@ export const examsApi = (params: Partial<Exams> & { page: number, pagesize: numb
   return request.get<BaseResponse<{ list: Exams[], total: number }>>('/exam/list', { params })
 }
 
-// 创建试卷
-export const createExamApi = (data: Omit<Exams, '_id'>) => {
-  return request.post<BaseResponse>('/exam/create', data)
-}
+// // 创建试卷
+// export const createExamApi = (data: Omit<Exams, '_id'>) => {
+//   return request.post<BaseResponse>('/exam/create', data)
+// }
 
 // 编辑试卷
 export const editExamApi = (data: Exams) => {

@@ -2,6 +2,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { examinationListApi, studentGroupApi, classifyApi,removeExamApi } from '../../services';
 import type { examinationItem, studentGroupItem, classifyItem, removeExamItem } from '../../type';
+// import { useDispatch } from 'react-redux';
 
 // 定义 State 类型
 interface ExaminationState {
@@ -24,7 +25,7 @@ const initialState: ExaminationState = {
   error: null,
 };
 
-
+// 考试列表
 export const fetchExaminationList = createAsyncThunk(
   'examination/fetchExaminationList',
   async (query, { rejectWithValue }) => {
@@ -40,6 +41,7 @@ export const fetchExaminationList = createAsyncThunk(
   
 );
 
+// 班级列表
 export const fetchStudentGroupList = createAsyncThunk(
   'examination/fetchStudentGroupList',
   async (query, { rejectWithValue }) => {
@@ -52,6 +54,7 @@ export const fetchStudentGroupList = createAsyncThunk(
   }
 );
 
+// 科目列表
 export const fetchClassifyList = createAsyncThunk(
   'examination/fetchClassifyList',
   async (query, { rejectWithValue }) => {
@@ -64,12 +67,14 @@ export const fetchClassifyList = createAsyncThunk(
   }
 );
 
+// 删除
 export const deleteExaminations = createAsyncThunk(
   'examination/deleteExamination',
-  async (id, { rejectWithValue }) => {
+  async (_id, { rejectWithValue,dispatch }) => {
     try {
-      const response = await removeExamApi({_id: id}); // 假设这是你的 API 删除操作
+      const response = await removeExamApi({id: _id});
       console.log(response);
+      dispatch(deleteExamination(_id));
       return response.data;
     
     } catch (error) {
@@ -95,10 +100,11 @@ export const deleteExaminations = createAsyncThunk(
       setClassifyList: (state, action) => {
         state.classifyList = action.payload;
       },
-      removeExamination: (state, action) => {
-        const { id } = action.payload;
-        state.examinationList = state.examinationList.filter(item => item._id !== id);
-      },  
+      // removeExamination: (state, action) => {
+      //   const { id } = action.payload;
+      //   state.examinationList = state.examinationList.filter(item => item._id !== id);
+      // },  
+      // 删除
       deleteExamination: (state, action) => {
         state.examinationList = state.examinationList.filter(item => item._id !== action.payload.id);
       },
@@ -147,7 +153,7 @@ export const deleteExaminations = createAsyncThunk(
           state.error = action.payload;
         })
 
-       
+        //  删除
         .addCase(deleteExaminations.pending, (state) => {
           state.loading = true;
         })
@@ -166,5 +172,5 @@ export const deleteExaminations = createAsyncThunk(
     },
   });
   
-  export const { setExaminationList, setStudentGroupList, setClassifyList,removeExamination,deleteExamination } = examinationSlice.actions;
+  export const { setExaminationList, setStudentGroupList, setClassifyList,deleteExamination } = examinationSlice.actions;
   export const examinationReducer = examinationSlice.reducer;
