@@ -34,21 +34,21 @@ const TestBank: React.FC = () => {
   const [data, setData] = useState<DataType[]>([]);
   const [pagination, setPagination] = useState({ current: 1, pageSize: 7 }); // 分页状态
   
-  const tests = async (page: number, pageSize: number): Promise<void> => {
-    const res = await testsApi({
+  // const tests = async (page: number, pageSize: number): Promise<void> => {
+  //   const res = await testsApi({
      
-    });
-    console.log(res.data.data);
-    const dataWithKeys = res.data.data.list.map((item: DataType, index: number) => ({
-      ...item,
-      key: `${item.testlist}-${index}`
-    }));
-    setData(dataWithKeys);
-  };
+  //   });
+  //   console.log(res.data.data);
+  //   const dataWithKeys = res.data.data.list.map((item: DataType, index: number) => ({
+  //     ...item,
+  //     key: `${item.testlist}-${index}`
+  //   }));
+  //   setData(dataWithKeys);
+  // };
 
-  useEffect(() => {
-    tests(pagination.current, pagination.pageSize);
-  }, [pagination]); // 依赖项数组中添加 pagination
+  // useEffect(() => {
+  //   tests(pagination.current, pagination.pageSize);
+  // }, [pagination]); // 依赖项数组中添加 pagination
 
   const handleTableChange = (newPagination: any) => {
     setPagination(newPagination);
