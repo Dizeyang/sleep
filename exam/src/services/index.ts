@@ -8,7 +8,7 @@ import type {
   MenuItem,
   UserListParams,
   UserListRes,
-  Exams
+  Exam,
 } from '../type' 
 
 
@@ -31,8 +31,18 @@ export const menuListApi = () => {
 export const userListApi = (params: UserListParams) => {
   return request.get<UserListRes>('/user/list', { params })
 }
+//查询试卷列表
+// http://192.168.28.11:3001/exam/list?page=1&pagesize=10
 
 // 试卷库接口
-export const examsApi = () => {
-  return request.get<BaseResponse<Exams>>('exam/list')
+export const examsApi = (params:UserListParams) => {
+  return request.get<BaseResponse<Exam>>('/Exam/list', { params })
+}
+
+export const testsApi = (params:UserListParams) => {
+  return request.get<BaseResponse<Exam>>('/question/list', { params })
+}
+
+export const createQuestionApi = () => {
+  return request.post('/question/create')
 }

@@ -66,8 +66,8 @@ export type MenuItem = {
 
 // 用户列表
 export type UserListParams = {
-  page: number
-  pagesize: number
+  page?: number
+  pagesize?: number
 }
 export type UserListItem = {
   _id: string
@@ -83,3 +83,19 @@ export type UserListRes = BaseResponse<{
   total: number
   list: UserListItem[]
 }>
+export type ExamData={ 
+  question:string,
+  type:string,
+  classify:string
+}
+//试题库
+export type Exam={
+  data:{
+    data:{
+      total: number, 
+      totalPage: number,
+      list:
+          ExamData[]
+    }
+  }
+}

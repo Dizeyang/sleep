@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import  { useEffect, useState } from 'react'
 import { userListApi } from '../../services'
 import type { UserListItem } from '../../type'
 import { Table, Image } from 'antd'
