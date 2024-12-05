@@ -43,6 +43,7 @@ const ExamRecords = () => {
     console.log('Updated Query:', params);
     // console.log("handleSearch triggered with values:", value);
     // 使用dispatch分发action来更新query状态
+    console.log(params)
     dispatch(setQuery({ ...query, ...params, page: 1 })); // 使用setQuery action creator
   };
 
@@ -75,21 +76,24 @@ const ExamRecords = () => {
     }
     useEffect(() => {
       getexaminationList()
+      
       console.log('Query Changed:', query); 
     }, [query])
     
     // 班级列表
     const getStudentGroupList = async () => {
       setLoading(true);
-      const res = await studentGroupApi(query);
+      const res = await studentGroupApi();
       const options = res?.data.data.list.map(item => ({
         label: item.name, // 下拉列表显示的文本
         value: item.name, // 下拉列表的值
         key: item._id, // 下拉列表的唯一键值
       }));
+
       setLoading(true)
       setstudentGroupList(res?.data.data.list)
       setTotal(res?.data.data.total)
+      console.log(res?.data.data.list)
       // setQuery({ page: 1, pagesize: 20 })
       setGradeOptions(options); // 设置班级选择的选项
       setLoading(false)
@@ -104,7 +108,7 @@ const ExamRecords = () => {
       const res = await classifyApi(query);
       const options = res?.data.data.list.map(item => ({
         label: item.name, // 下拉列表显示的文本
-        value: item._id, // 下拉列表的值
+        value: item.name, // 下拉列表的值
         key: item._id, // 下拉列表的唯一键值
       }));
       setClassifyList(options)
@@ -139,13 +143,13 @@ const ExamRecords = () => {
               <ProFormText name="status" label="状态" />
               <ProFormText name="examiner" label="监考人" />
               <ProFormSelect
-                name="name"
+                name="examgroup"
                 label="班级选择"
                 options={gradeOptions}
               />
               <ProFormDatePicker name="startTime" label="考试时间" />
             </QueryFilter>
-            <ExamRecord handleAnalysisBack={handleAnalysisBack}/>
+            <ExamRecord query={query} studentGroupList={studentGroupList}  handleAnalysisBack={handleAnalysisBack}/>
           </div>
         )}
         {!isAnalysisOpen && <ExamAnalysis onBack={handleAnalysisBack} />}

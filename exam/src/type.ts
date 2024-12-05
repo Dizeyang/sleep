@@ -100,6 +100,8 @@ export type examinationItem = {
   endTime: number
   examiner: string
   startTime: number
+  group: string
+  questionsList: string[]
 }
 export type examinationRes = BaseResponse<{
   total: number
@@ -197,4 +199,5 @@ export type removeExamItem = {
 export type removeExamRes = BaseResponse<{
   total: number
   list: removeExamItem[]
+  _id: string
 }>

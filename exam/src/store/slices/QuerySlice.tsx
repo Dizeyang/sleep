@@ -6,7 +6,7 @@ const querySlice = createSlice({
   initialState: {
     query: {
       page: 1,
-      pagesize: 5,
+      pagesize: 10,
     },
   },
   reducers: {
